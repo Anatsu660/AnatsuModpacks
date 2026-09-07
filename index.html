@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatsu Modpacks</title>
+    <style>
+        /* ==========================================
+           1. ESTILOS GENERALES Y CONFIGURACIÓN BASE
+           ========================================== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #283548;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        /* ==========================================
+           2. BARRA DE NAVEGACIÓN (MENU)
+           ========================================== */
+        .barra-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-sizing: border-box;
+            z-index: 1000;
+            transition: background-color 0.4s ease, backdrop-filter 0.4s ease, border-bottom 0.4s ease;
+            background-color: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .barra-menu.scrolled {
+            background-color: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #334155;
+        }
+
+        .menu-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-nav {
+            height: 35px;
+            width: auto;
+        }
+
+        .menu-enlaces {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu-enlaces a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s, transform 0.3s, font-size 0.3s;
+        }
+
+        .menu-enlaces a.activo {
+            color: #4ade80;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+        }
+
+        .menu-enlaces a:hover {
+            color: #4ade80;
+        }
+
+        /* ==========================================
+           3. SECCIÓN HERO (BIENVENIDA)
+           ========================================== */
+        .hero-bienvenida {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: url('Imagenes/Back image.png') no-repeat center center/cover;
+        }
+
+        .hero-bienvenida::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            z-index: 1;
+        }
+
+        .hero-contenido {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            padding: 20px;
+        }
+
+        .logo-gigante {
+            max-width: 450px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 25px rgba(74, 222, 128, 0.4));
+        }
+
+        .hero-bienvenida p {
+            font-size: 1.25rem;
+            color: #e2e8f0;
+            margin-bottom: 30px;
+        }
+
+        .btn-explorar {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e, #15803d);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-explorar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+        }
+
+        /* ==========================================
+           4. SECCIONES DE CONTENIDO GENERALES
+           ========================================== */
+        .seccion-contenido {
+            min-height: 100vh;
+            padding: 100px 40px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .seccion-contenido h2 {
+            color: #4ade80;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+
+        /* ==========================================
+           5. TARJETAS DE PROYECTOS / MODPACKS
+           (Nota personal: Aquí agregué el cambio de fondo al pasar el mouse)
+           ========================================== */
+        .contenedor-proyectos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .tarjeta-proyecto {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            background-color: #3b4c66;
+            border: 2px solid #475569;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+            /* Nota personal: Imagen de fondo por defecto transparente */
+            background-image: none;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Nota personal: Efecto al pasar el cursor (Cambia la imagen de fondo por una captura o textura) */
+        .tarjeta-proyecto:hover {
+            transform: translateY(-8px);
+            border-color: #4ade80;
+            box-shadow: 0 12px 30px rgba(74, 222, 128, 0.2);
+            /* Cambia 'Imagenes/Back image.png' por la captura que quieras mostrar al hacer hover */
+        background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Homepage_Gameplay-Trailer_MC-OV-logo_300x300.png;')
+        }
+
+        .tarjeta-proyecto img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .tarjeta-proyecto:hover img {
+            transform: scale(1.05);
+            opacity: 0.8; /* Se atenúa ligeramente para que luzca mejor con el fondo */
+        }
+
+        .cuadro-nombre {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(40, 53, 72, 0.95);
+            border-top: 1px solid #475569;
+            padding: 12px 0;
+            color: #4ade80;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: bottom 0.3s ease;
+        }
+
+        .tarjeta-proyecto:hover .cuadro-nombre {
+            bottom: 0;
+        }
+
+        /* ==========================================
+           6. MODAL / VENTANA EMERGENTE
+           ========================================== */
+        .modal-detalles {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-contenido {
+            background-color: #3b4c66;
+            border: 2px solid #4ade80;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: left;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .modal-contenido h3 {
+            color: #4ade80;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .modal-contenido p {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .modal-imagen-preview {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background-color: #1e293b;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #475569;
+        }
+
+        .btn-cerrar-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-cerrar-modal:hover {
+            color: #4ade80;
+        }
+
+        .btn-modal-descargar {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e, #15803d);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .btn-modal-descargar:hover {
+            transform: scale(1.02);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ==========================================
+           7. SECCIÓN COMPLEMENTOS Y GUÍAS
+           ========================================== */
+        .contenedor-complementos {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .caja-complemento {
+            background-color: #3b4c66;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .caja-complemento h3 {
+            color: #4ade80;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .caja-complemento h4 {
+            color: #4ade80;
+            margin-bottom: 8px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .caja-complemento p,
+        .caja-complemento li {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .caja-complemento ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .caja-complemento a {
+            color: #4ade80;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .caja-complemento a:hover {
+            text-decoration: underline;
+        }
+
+        .bloque-codigo {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .bloque-codigo code {
+            color: #4ade80;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .btn-copiar {
+            background-color: #22c55e;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-copiar:hover {
+            background-color: #16a34a;
+        }
+
+        .btn-copiar:active {
+            transform: scale(0.95);
+        }
+
+        /* ==========================================
+           8. SECCIÓN TUTORIALES
+           ========================================== */
+        .contenedor-tutoriales {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .tarjeta-video {
+            background-color: #3b4c66;
+            border: 1px solid #475569;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 480px;
+            max-width: 100%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+
+        .video-responsive {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .info-video {
+            padding: 20px;
+        }
+
+        .info-video h3 {
+            color: #4ade80;
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+        }
+
+        .info-video p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* ==========================================
+           9. SECCIÓN REDES SOCIALES
+           ========================================== */
+        .tarjeta-red {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            background-color: #3b4c66;
+            border: 2px solid #283548;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .tarjeta-red:hover {
+            transform: translateY(-8px);
+            border-color: #4ade80;
+            box-shadow: 0 12px 30px rgba(74, 222, 128, 0.2);
+        }
+
+        .tarjeta-red svg {
+            width: 65px;
+            height: 65px;
+            fill: #f8fafc;
+            margin-bottom: 8px;
+            transition: transform 0.3s ease, fill 0.3s ease;
+        }
+
+        .tarjeta-red:hover svg {
+            transform: scale(1.05);
+            fill: #4ade80;
+        }
+
+        .cuadro-nombre-red {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(40, 53, 72, 0.95);
+            border-top: 1px solid #475569;
+            padding: 12px 0;
+            color: #4ade80;
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: center;
+            transition: bottom 0.3s ease;
+            margin: 0;
+        }
+
+        .tarjeta-red:hover .cuadro-nombre-red {
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="barra-menu" id="menu">
+        <a href="#inicio" class="menu-logo">
+            <img src="Imagenes/Title.png" alt="Anatsu Modpacks" class="logo-nav">
+        </a>
+        <ul class="menu-enlaces">
+            <li><a href="#inicio" class="nav-link">Inicio</a></li>
+            <li><a href="#proyectos" class="nav-link">Proyectos</a></li>
+            <li><a href="#complementos" class="nav-link">Complementos</a></li>
+            <li><a href="#tutoriales" class="nav-link">Tutoriales</a></li>
+            <li><a href="#redes" class="nav-link">Redes</a></li>
+        </ul>
+    </nav>
+
+    <section id="inicio" class="hero-bienvenida">
+        <div class="hero-contenido">
+            <img src="Imagenes/Title.png" alt="Anatsu Modpacks Grande" class="logo-gigante">
+            <p>Optimización y contenido para llevar tu Minecraft al siguiente nivel</p>
+            <a href="#proyectos" class="btn-explorar">Ver Proyectos</a>
+        </div>
+    </section>
+
+    <section id="proyectos" class="seccion-contenido">
+        <h2>Proyectos</h2>
+        <div class="contenedor-proyectos">
+            <div class="tarjeta-proyecto" onclick="abrirModal('mobile')">
+                <img src="Imagenes/AnatsuOptimiced Logo.svg" alt="Modpack 1">
+                <div class="cuadro-nombre">AnatsuOptimiced-MOBILE EDITION</div>
+            </div>
+            <div class="tarjeta-proyecto" onclick="abrirModal('pc')">
+                <img src="Imagenes/AnatsuOptimiced Logo.svg" alt="Modpack 2">
+                <div class="cuadro-nombre">AnatsuOptimiced-PC EDITION</div>
+            </div>
+            <div class="tarjeta-proyecto" onclick="abrirModal('proximo')">
+                <img src="Imagenes/loading.gif" alt="Modpack 3">
+                <div class="cuadro-nombre">Proximamente...</div>
+            </div>
+        </div>
+    </section>
+
+    <div id="modalDetalles" class="modal-detalles">
+        <div class="modal-contenido">
+            <button class="btn-cerrar-modal" onclick="cerrarModal()">&times;</button>
+            <img id="modalImg" src="" alt="Vista previa" class="modal-imagen-preview">
+            <h3 id="modalTitulo">Título del Modpack</h3>
+            <p id="modalDescripcion">Descripción detallada del modpack...</p>
+            <a id="modalBoton" href="#" target="_blank" class="btn-modal-descargar">Descargar Modpack</a>
+        </div>
+    </div>
+
+    <section id="complementos" class="seccion-contenido">
+        <h2>Complementos y Guías</h2>
+        <div class="contenedor-complementos">
+            
+            <div class="caja-complemento">
+                <h3>Java Arguments (Guía de Optimización)</h3>
+                <p>Añade estos argumentos en tu launcher para mejorar el rendimiento del recolector de basura y ganar estabilidad de FPS.</p>
+
+                <h4>Mobile</h4>
+                <p><strong>Recomendación de RAM Máxima:</strong></p>
+                <ul>
+                    <li>4 Gigas de RAM = 2048 MB Máximo</li>
+                    <li>6 Gigas de RAM = 4098 MB Máximo</li>
+                    <li>8 Gigas de RAM = 6000 MB Máximo</li>
+                    <li>12 Gigas de RAM o Más = 8 Gigas de RAM Máximo</li>
+                </ul>
+                <p>Argumentos de Java:</p>
+                <div class="bloque-codigo">
+                    <code id="args-mobile">-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -Xms1024M -Xmx3G -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=45 -XX:G1ReservePercent=15 -XX:G1HeapRegionSize=16M -XX:SurvivorRatio=32 -XX:+ParallelRefProcEnabled</code>
+                    <button class="btn-copiar" onclick="copiarTexto('args-mobile', this)">Copiar</button>
+                </div>
+
+                <h4>PC</h4>
+                <p><strong>Recomendación de RAM (dejando mínimo 4 GB libres para el funcionamiento básico del PC):</strong></p>
+                <ul>
+                    <li>4 Gigas de RAM = Asignar 3 GB</li>
+                    <li>8 Gigas de RAM = Asignar 6 GB</li>
+                    <li>12 Gigas de RAM o Más = Asignar 8 GB</li>
+                </ul>
+                <p>Argumentos de Java:</p>
+                <div class="bloque-codigo">
+                    <code id="args-pc">-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=45 -XX:G1ReservePercent=15 -XX:G1HeapRegionSize=16M -XX:SurvivorRatio=32 -XX:+ParallelRefProcEnabled</code>
+                    <button class="btn-copiar" onclick="copiarTexto('args-pc', this)">Copiar</button>
+                </div>
+            </div>
+
+            <div class="caja-complemento">
+                <h3>MobileGlues (Versión Móvil)</h3>
+                <p>Herramienta esencial para optimizar la experiencia táctil y rendimiento en dispositivos móviles. Descárgala directamente desde su repositorio:</p>
+                <a href="https://github.com/MobileGL-Dev/MobileGlues-release" target="_blank">Ir al GitHub oficial de MobileGlues &rarr;</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="tutoriales" class="seccion-contenido">
+        <h2>Tutoriales</h2>
+        <div class="contenedor-tutoriales">
+            <div class="tarjeta-video">
+                <div class="video-responsive">
+                    <iframe src="https://www.youtube.com/embed/TU_ID_DE_VIDEO_1" title="Tutorial 1" allowfullscreen></iframe>
+                </div>
+                <div class="info-video">
+                    <h3>Cómo instalar modpacks Mobile</h3>
+                    <p>Descubre como descargar e instalar cualquier modpack importado Mobile</p>
+                </div>
+            </div>
+
+            <div class="tarjeta-video">
+                <div class="video-responsive">
+                    <iframe src="https://www.youtube.com/embed/TU_ID_DE_VIDEO_2" title="Tutorial 2" allowfullscreen></iframe>
+                </div>
+                <div class="info-video">
+                    <h3>Cómo instalar modpacks Pc</h3>
+                    <p>Descubre como descargar e instalar cualquier modpack importado Pc</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="redes" class="seccion-contenido">
+        <h2>Sígueme en mis Redes</h2>
+        <div class="contenedor-proyectos">
+            <a href="https://www.instagram.com/anatsu1308?stkn=NnoxeDkwOTZxaGl1" target="_blank" class="tarjeta-red">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <p class="cuadro-nombre-red">Anatsu130</p>
+            </a>
+
+            <a href="https://www.tiktok.com/@anatsu1308?_r=1&_t=ZS-99WBFMh2rwI" target="_blank" class="tarjeta-red">
+                <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                <p class="cuadro-nombre-red">Anatsu1308</p>
+            </a>
+
+            <a href="https://www.youtube.com/@Anatsu130-z7i" target="_blank" class="tarjeta-red">
+                <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <p class="cuadro-nombre-red">Anatsu130</p>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Nota personal: Control del menú superior dinámico y cambios de sección activa al hacer scroll
+        window.addEventListener('scroll', function() {
+            const menu = document.getElementById('menu');
+            if (window.scrollY > 50) {
+                menu.classList.add('scrolled');
+            } else {
+                menu.classList.remove('scrolled');
+            }
+
+            const secciones = document.querySelectorAll('.seccion-contenido, .hero-bienvenida');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let idActual = '';
+            secciones.forEach(seccion => {
+                const seccionTop = seccion.offsetTop;
+                if (window.scrollY >= (seccionTop - 150)) {
+                    idActual = seccion.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('activo');
+                if (link.getAttribute('href') === '#' + idActual) {
+                    link.classList.add('activo');
+                }
+            });
+        });
+
+        // Nota personal: Base de datos para la ventana emergente (Modal) de cada modpack
+        const datosModpacks = {
+            mobile: {
+                titulo: "AnatsuOptimiced - MOBILE EDITION",
+                descripcion: "Modpack de optimización para celulares, pensado para cualquier gama, compatible con un 99% de los mods existentes para la version 1.20.1 Forge y fabric.",
+                imagen: "Imagenes/AnatsuOptimiced Logo.svg",
+                link: "https://drive.google.com/file/d/1OWNSw1LoFvzWMSG9HRnr7H7EEXvjQXCY/view?usp=sharing"
+            },
+            pc: {
+                titulo: "AnatsuOptimiced - PC EDITION",
+                descripcion: "Modpack de optimización para Laptops/Computadoras de escritorio, pensado para cualquier gama, compatible con un 99% de los mods existentes para la version 1.20.1 Forge y fabric.",
+                imagen: "Imagenes/AnatsuOptimiced Logo.svg",
+                link: "https://drive.google.com/file/d/1RiGHF6q7eGTfj1LwLfr0v9w6zmMXg3I1/view?usp=sharing"
+            },
+            proximo: {
+                titulo: "Próximo Proyecto en Desarrollo",
+                descripcion: "Este modpack se encuentra actualmente en fase de pruebas y configuración. Pronto estará disponible con características, aventura y optimizaciones exclusivas. ¡Mantente atento!",
+                imagen: "Imagenes/loading.gif",
+                link: "#"
+            }
+        };
+
+        function abrirModal(tipo) {
+            const datos = datosModpacks[tipo];
+            document.getElementById('modalTitulo').innerText = datos.titulo;
+            document.getElementById('modalDescripcion').innerText = datos.descripcion;
+            document.getElementById('modalImg').src = datos.imagen;
+            
+            const btnDescarga = document.getElementById('modalBoton');
+            btnDescarga.href = datos.link;
+            if(tipo === 'proximo') {
+                btnDescarga.style.display = 'none'; 
+            } else {
+                btnDescarga.style.display = 'inline-block';
+            }
+
+            document.getElementById('modalDetalles').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalDetalles').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalDetalles');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        }
+
+        // Nota personal: Función para copiar los argumentos de Java con un clic
+        function copiarTexto(idElemento, boton) {
+            const texto = document.getElementById(idElemento).innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                const originalText = boton.innerText;
+                boton.innerText = "¡Copiado!";
+                boton.style.backgroundColor = "#16a34a";
+                setTimeout(() => {
+                    boton.innerText = originalText;
+                    boton.style.backgroundColor = "#22c55e";
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar el texto: ', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
